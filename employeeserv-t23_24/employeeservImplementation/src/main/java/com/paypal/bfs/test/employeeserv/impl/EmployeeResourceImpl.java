@@ -1,7 +1,8 @@
 package com.paypal.bfs.test.employeeserv.impl;
 
 import com.paypal.bfs.test.employeeserv.api.EmployeeResource;
-import com.paypal.bfs.test.employeeserv.api.model.Employee;
+import com.paypal.bfs.test.employeeserv.dao.*;
+import com.paypal.bfs.test.employeeserv.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,13 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmployeeResourceImpl implements EmployeeResource {
 
     @Override
-    public ResponseEntity<Employee> employeeGetById(String id) {
+    public ResponseEntity<EmployeeRequest> employeeGetById(String id) {
 
-        Employee employee = new Employee();
-        employee.setId(Integer.valueOf(id));
-        employee.setFirstName("BFS");
-        employee.setLastName("Developer");
+        EmployeeRequest employeeRequest = new EmployeeRequest();
+//        employee.setId(Integer.valueOf(id));
+//        employee.setFirstName("BFS");
+//        employee.setLastName("Developer");
 
-        return new ResponseEntity<>(employee, HttpStatus.OK);
+        return new ResponseEntity<>(employeeRequest, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Employee> createEmployee(EmployeeRequest employeeDetails) {
+        return null;
+    }
+
 }
