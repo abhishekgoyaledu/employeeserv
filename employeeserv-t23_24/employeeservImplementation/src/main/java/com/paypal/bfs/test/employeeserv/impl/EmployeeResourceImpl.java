@@ -2,6 +2,7 @@ package com.paypal.bfs.test.employeeserv.impl;
 
 import com.paypal.bfs.test.employeeserv.api.EmployeeResource;
 import com.paypal.bfs.test.employeeserv.dao.*;
+import com.paypal.bfs.test.employeeserv.exception.*;
 import com.paypal.bfs.test.employeeserv.model.*;
 import com.paypal.bfs.test.employeeserv.service.*;
 import com.paypal.bfs.test.employeeserv.utils.*;
@@ -32,9 +33,13 @@ public class EmployeeResourceImpl implements EmployeeResource {
     @Override
     @Transactional
     public ResponseEntity<EmployeeRequest> createEmployee(EmployeeRequest employeeDetails) {
-        Employee employeeEntity = Utils.convertRequestToEntity(employeeDetails);
-        employeeEntity = employeeService.createEmployee(employeeEntity);
-        return new ResponseEntity<>(employeeDetails, HttpStatus.OK);
+        String valiationError = Utils.isValidRequest(employeeDetails);
+        if(valiationError.length() == 0){
+            Employee employeeEntity = Utils.convertRequestToEntity(employeeDetails);
+            employeeEntity = employeeService.createEmployee(employeeEntity);
+            return new ResponseEntity<>(employeeDetails, HttpStatus.OK);
+        }
+        throw new InvalidEmployeeDataException(valiationError);
     }
 
 }

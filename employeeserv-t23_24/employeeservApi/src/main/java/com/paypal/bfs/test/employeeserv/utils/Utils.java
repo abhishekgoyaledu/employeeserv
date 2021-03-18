@@ -1,8 +1,10 @@
 package com.paypal.bfs.test.employeeserv.utils;
 
 import com.paypal.bfs.test.employeeserv.dao.*;
+import com.paypal.bfs.test.employeeserv.enums.*;
 import com.paypal.bfs.test.employeeserv.model.*;
 
+import javax.print.*;
 import java.text.*;
 import java.util.*;
 import java.util.regex.*;
@@ -47,35 +49,39 @@ public class Utils {
         DateOfBirth employeeDateOfBirth = new DateOfBirth();
         try {
             date = new SimpleDateFormat("dd/MM/yyyy").parse(dateOfBirth);
-            employeeDateOfBirth.setDate(date.getDay());
-            employeeDateOfBirth.setMonth(date.getMonth());
-            employeeDateOfBirth.setYear(date.getYear());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            employeeDateOfBirth.setDate(calendar.get(Calendar.DAY_OF_MONTH));
+            //Addting 1 as calender months starts from 0
+            employeeDateOfBirth.setMonth(calendar.get(Calendar.MONTH)+1);
+            employeeDateOfBirth.setYear(calendar.get(Calendar.YEAR));
         } catch (Exception exception){
             throw new Exception("Cannot parse date of birth");
         }
         return employeeDateOfBirth;
     }
 
-    public static boolean isValidRequest(EmployeeRequest employeeRequest) {
+    public static String isValidRequest(EmployeeRequest employeeRequest) {
+        RequestErrorEnums errorEnums;
         if(!Utils.isValidRequestField(Constants.FULL_NAME_REGEX, employeeRequest.getFirstName())){
-            return false;
+            return Utils.getErrorMessage(RequestErrorEnums.FIRST_NAME_ERROR);
         }
         if(!Utils.isValidRequestField(Constants.FULL_NAME_REGEX, employeeRequest.getLastName())){
-            return false;
+            return Utils.getErrorMessage(RequestErrorEnums.LAST_NAME_ERROR);
         }
         if(!Utils.isValidRequestField(Constants.STATE_CITY_REGEX, employeeRequest.getAddress().getCity())){
-            return false;
+            return Utils.getErrorMessage(RequestErrorEnums.ADDRESS_CITY_ERROR);
         }
         if(!Utils.isValidRequestField(Constants.STATE_CITY_REGEX, employeeRequest.getAddress().getState())){
-            return false;
+            return Utils.getErrorMessage(RequestErrorEnums.ADDRESS_STATE_ERROR);
         }
         if(!Utils.isValidRequestField(Constants.COUNTRY_REGEX, employeeRequest.getAddress().getCountry())){
-            return false;
+            return Utils.getErrorMessage(RequestErrorEnums.ADDRESS_COUNTRY_ERROR);
         }
         if(!Utils.isValidRequestField(Constants.ZIP_CODE_REGEX, employeeRequest.getAddress().getZipCode())){
-            return false;
+            return Utils.getErrorMessage(RequestErrorEnums.ADDRESS_ZIPCODE_ERROR);
         }
-        return true;
+        return "";
     }
 
     public static boolean isValidRequestField(String fieldRegex, String requestField) {
@@ -85,5 +91,9 @@ public class Utils {
         Pattern p = Pattern.compile(fieldRegex);
         Matcher m = p.matcher(requestField);
         return m.matches();
+    }
+
+    public static String getErrorMessage(RequestErrorEnums errorEnums) {
+        return errorEnums.getErrorMessage();
     }
 }
