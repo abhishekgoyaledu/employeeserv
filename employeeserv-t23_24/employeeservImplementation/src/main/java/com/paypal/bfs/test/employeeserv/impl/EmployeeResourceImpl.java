@@ -22,21 +22,19 @@ public class EmployeeResourceImpl implements EmployeeResource {
     EmployeeService employeeService;
 
     @Override
-    public ResponseEntity<EmployeeRequest> employeeGetById(String id) {
+    public ResponseEntity<EmployeeRequest> employeeGetById(long id) throws Exception {
         Employee employee = null;
-        Employee empEntity = employeeService.getEmployee(Integer.parseInt(id.trim())).get();
-
+        Employee empEntity = employeeService.getEmployee(id).get();
         EmployeeRequest employeeRequest = Utils.convertEntityToResponse(empEntity);
-
         return new ResponseEntity<>(employeeRequest, HttpStatus.OK);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<Employee> createEmployee(EmployeeRequest employeeDetails) {
+    public ResponseEntity<EmployeeRequest> createEmployee(EmployeeRequest employeeDetails) {
         Employee employeeEntity = Utils.convertRequestToEntity(employeeDetails);
         employeeEntity = employeeService.createEmployee(employeeEntity);
-        return null;
+        return new ResponseEntity<>(employeeDetails, HttpStatus.OK);
     }
 
 }

@@ -7,5 +7,5 @@ public interface EmployeeService {
 	
 	public Employee createEmployee(Employee employee);
 	
-	public Optional<Employee> getEmployee(int id);
+	public Optional<Employee> getEmployee(long id);
 }

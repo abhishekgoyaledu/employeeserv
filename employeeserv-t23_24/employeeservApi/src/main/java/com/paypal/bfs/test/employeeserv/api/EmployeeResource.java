@@ -17,7 +17,7 @@ public interface EmployeeResource {
      * @return {@link Employee} resource.
      */
     @GetMapping("/v1/bfs/employees/{id}")
-    ResponseEntity<EmployeeRequest> employeeGetById(@PathVariable("id") String id);
+    ResponseEntity<EmployeeRequest> employeeGetById(@PathVariable("id") long id) throws Exception;
 
     /**
      * Creates the {@link Employee} resource
@@ -25,5 +25,5 @@ public interface EmployeeResource {
      * @return {@link Employee} resource upon successful creation.
      */
     @PostMapping("/v1/bfs/employees")
-    ResponseEntity<Employee> createEmployee(@RequestBody EmployeeRequest employeeDetails);
+    ResponseEntity<EmployeeRequest> createEmployee(@RequestBody EmployeeRequest employeeDetails);
 }
