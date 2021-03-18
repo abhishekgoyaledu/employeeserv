@@ -4,9 +4,11 @@ import com.paypal.bfs.test.employeeserv.*;
 import com.paypal.bfs.test.employeeserv.dao.*;
 import com.paypal.bfs.test.employeeserv.service.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
 import java.util.*;
 
+@Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
