@@ -15,7 +15,7 @@ public enum RequestErrorEnums {
     ADDRESS_STATE_ERROR("city can only contain alphabet and maximum length is 90"),
     ADDRESS_COUNTRY_ERROR("city can only contain alphabet and maximum length is 80"),
     ADDRESS_ZIPCODE_ERROR("city can only contain numeric values and maximum length is 20");
-
+	
     private final String errorMessage;
 
     RequestErrorEnums(String type) {

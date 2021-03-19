@@ -1,10 +1,9 @@
 package com.paypal.bfs.test.employeeserv.utils;
 
-import com.paypal.bfs.test.employeeserv.dao.*;
+import com.paypal.bfs.test.employeeserv.dao.Employee;
 import com.paypal.bfs.test.employeeserv.enums.*;
 import com.paypal.bfs.test.employeeserv.model.*;
 
-import javax.print.*;
 import java.text.*;
 import java.util.*;
 import java.util.regex.*;
@@ -12,9 +11,12 @@ import java.util.regex.*;
 //Utility class in order to validate the request
 public class Utils {
 
-    public static Employee convertRequestToEntity(EmployeeRequest employeeRequest) {
+    public static Employee convertModelToDaoObject(EmployeeRequest employeeRequest) {
         Employee employee = new Employee();
-
+        if (employeeRequest.getId() != 0) {
+            // ignoring for post calls
+            employee.setId(Long.valueOf(employeeRequest.getId()));
+        }
         employee.setFirstName(employeeRequest.getFirstName());
         employee.setLastName(employeeRequest.getLastName());
         employee.setDateOfBirth(employeeRequest.getDateOfBirth().getDate() + "/" + employeeRequest.getDateOfBirth().getMonth() + "/" + employeeRequest.getDateOfBirth().getYear());
@@ -25,22 +27,6 @@ public class Utils {
         employee.setCountry(employeeRequest.getAddress().getCountry());
         employee.setZipCode(employeeRequest.getAddress().getZipCode());
 
-        return employee;
-    }
-
-    public static EmployeeRequest convertEntityToResponse(Employee employeeRequest) throws Exception {
-        EmployeeRequest employee = new EmployeeRequest();
-        employee.setFirstName(employeeRequest.getFirstName());
-        employee.setLastName(employeeRequest.getLastName());
-        employee.setDateOfBirth(Utils.parseDateOfBirth(employeeRequest.getDateOfBirth()));
-        Address address = new Address();
-        address.setLine1(employeeRequest.getAddressLine1());
-        address.setLine2(employeeRequest.getAddressLine2());
-        address.setCity(employeeRequest.getCity());
-        address.setState(employeeRequest.getState());
-        address.setCountry(employeeRequest.getCountry());
-        address.setZipCode(employeeRequest.getZipCode());
-        employee.setAddress(address);
         return employee;
     }
 
@@ -62,7 +48,6 @@ public class Utils {
     }
 
     public static String isValidRequest(EmployeeRequest employeeRequest) {
-        RequestErrorEnums errorEnums;
         if(!Utils.isValidRequestField(Constants.FULL_NAME_REGEX, employeeRequest.getFirstName())){
             return Utils.getErrorMessage(RequestErrorEnums.FIRST_NAME_ERROR);
         }
@@ -83,9 +68,56 @@ public class Utils {
         }
         return "";
     }
+    
+    public static String isValidFirstAndLastName(final String nameValue) {
+		boolean isValidRequestField = Utils.isValidRequestField(Constants.FULL_NAME_REGEX, nameValue);
+		if (isValidRequestField) {
+			return null;
+		}
+		return RequestErrorEnums.FIRST_NAME_ERROR.getErrorMessage();
+	}
+    
+    public static String isValidCityName(final String cityValue) {
+		boolean isValidRequestField = Utils.isValidRequestField(Constants.STATE_CITY_REGEX, cityValue);
+		if (isValidRequestField) {
+			return null;
+		}
+		return RequestErrorEnums.ADDRESS_CITY_ERROR.getErrorMessage();
+	}
+    
+    public static String isValidStateName(final String stateValue) {
+		boolean isValidRequestField = Utils.isValidRequestField(Constants.STATE_CITY_REGEX, stateValue);
+		if (isValidRequestField) {
+			return null;
+		}
+		return RequestErrorEnums.ADDRESS_STATE_ERROR.getErrorMessage();
+	}
+    
+    public static String isValidCountryName(final String countryValue) {
+		boolean isValidRequestField = Utils.isValidRequestField(Constants.COUNTRY_REGEX, countryValue);
+		if (isValidRequestField) {
+			return null;
+		}
+		return RequestErrorEnums.ADDRESS_COUNTRY_ERROR.getErrorMessage();
+	}
+    
+    public static String isValidZipCode(final String zipcodeValue) {
+		boolean isValidRequestField = Utils.isValidRequestField(Constants.ZIP_CODE_REGEX, zipcodeValue);
+		if (isValidRequestField) {
+			return null;
+		}
+		return RequestErrorEnums.ADDRESS_ZIPCODE_ERROR.getErrorMessage();
+	}
+    
+    public static String isValidDateOfBirth(final String dateOfBirth) {
+    	if (dateOfBirth != null) {
+    		return null;
+    	}
+    	return RequestErrorEnums.DOB_INVALID_ERROR.getErrorMessage();
+    }
 
     public static boolean isValidRequestField(String fieldRegex, String requestField) {
-        if(requestField.length() == 0) {
+        if(requestField == null || requestField.length() == 0) {
             return false;
         }
         Pattern p = Pattern.compile(fieldRegex);
@@ -96,4 +128,24 @@ public class Utils {
     public static String getErrorMessage(RequestErrorEnums errorEnums) {
         return errorEnums.getErrorMessage();
     }
+
+	public static EmployeeRequest convertDaoObjectToModel(Employee employeeRequest) {
+		EmployeeRequest employee = new EmployeeRequest();
+        employee.setFirstName(employeeRequest.getFirstName());
+        employee.setLastName(employeeRequest.getLastName());
+        try {
+			employee.setDateOfBirth(Utils.parseDateOfBirth(employeeRequest.getDateOfBirth()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        Address address = new Address();
+        address.setLine1(employeeRequest.getAddressLine1());
+        address.setLine2(employeeRequest.getAddressLine2());
+        address.setCity(employeeRequest.getCity());
+        address.setState(employeeRequest.getState());
+        address.setCountry(employeeRequest.getCountry());
+        address.setZipCode(employeeRequest.getZipCode());
+        employee.setAddress(address);
+        return employee;
+	}
 }

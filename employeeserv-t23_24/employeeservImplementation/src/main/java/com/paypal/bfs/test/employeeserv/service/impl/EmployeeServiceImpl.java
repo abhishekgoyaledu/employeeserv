@@ -4,6 +4,7 @@ import com.paypal.bfs.test.employeeserv.*;
 import com.paypal.bfs.test.employeeserv.dao.*;
 import com.paypal.bfs.test.employeeserv.service.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
@@ -20,7 +21,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Optional<Employee> getEmployee(long id) {
+    public Optional<Employee> getEmployeeByEmployeeByID(long id) {
         return employeeDao.findById(id);
+    }
+
+    @Override
+    public Optional<Employee> getEmployeeByEmployeeObject(Employee employee) {
+        Example<Employee> example = Example.of(employee);
+        return employeeDao.findOne(example);
     }
 }

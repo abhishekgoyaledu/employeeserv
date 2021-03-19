@@ -111,6 +111,6 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "EmployeeEntity [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + "]";
+        return "EmployeeEntity {id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + "}";
     }
 }
